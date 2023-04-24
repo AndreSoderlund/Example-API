@@ -1,5 +1,6 @@
 package se.andresoderlund.example.service;
 
+import com.github.fge.jsonpatch.JsonPatch;
 import org.springframework.stereotype.Service;
 import se.andresoderlund.example.api.request.CreatePerson;
 import se.andresoderlund.example.db.DbIntegration;
@@ -15,10 +16,13 @@ public class PersonService {
 
     private final PersonMapper mapper;
 
+    private final JsonPatcher patcher;
+
     private final DbIntegration dbIntegration;
 
-    public PersonService(final PersonMapper mapper, final DbIntegration dbIntegration) {
+    public PersonService(final PersonMapper mapper, final JsonPatcher patcher, final DbIntegration dbIntegration) {
         this.mapper = mapper;
+        this.patcher = patcher;
         this.dbIntegration = dbIntegration;
     }
 
@@ -83,7 +87,9 @@ public class PersonService {
         dbIntegration.deletePersonById(id);
     }
 
-
-
-
+    public void updatePerson(final Long id, final JsonPatch patch) {
+        Person person = dbIntegration.getPersonById(id);
+        Person updatedPerson = patcher.applyPatch(patch, Person.class, person);
+        dbIntegration.savePerson(updatedPerson);
+    }
 }
