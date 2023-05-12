@@ -1,41 +1,72 @@
 package se.andresoderlund.example.db.entity;
 
+import java.math.BigDecimal;
+import java.util.function.Consumer;
+
 public class PersonDTO {
 
-    private Long id;
+    private final Long id;
 
-    private String name;
+    private final String name;
 
-    private int age;
+    private final int age;
 
-    private PersonDTO(Builder builder) {
+    private final BigDecimal salary;
+
+    public PersonDTO(Long id, String name, int age, BigDecimal salary) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.salary = salary;
+    }
+
+    private PersonDTO(final Builder builder) {
         this.id = builder.id;
         this.age = builder.age;
         this.name = builder.name;
+        this.salary = builder.salary;
+    }
+
+    private PersonDTO(final PersonDTO.FunctionalBuilder builder) {
+        this.id = builder.id;
+        this.age = builder.age;
+        this.name = builder.name;
+        this.salary = builder.salary;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public int getAge() {
         return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public BigDecimal getSalary() {
+        return salary;
+    }
+
+
+    public static class FunctionalBuilder {
+
+        public Long id;
+        public String name = "";
+        public int age = 0;
+        public BigDecimal salary = BigDecimal.valueOf(0);
+
+        public PersonDTO.FunctionalBuilder with(Consumer<PersonDTO.FunctionalBuilder> consumer) {
+            consumer.accept(this);
+            return this;
+        }
+
+        public PersonDTO build() {
+            return new PersonDTO(this);
+        }
+
     }
 
     public static class Builder {
@@ -43,6 +74,7 @@ public class PersonDTO {
         private Long id;
         private String name = "";
         private int age = 0;
+        private BigDecimal salary = BigDecimal.valueOf(0);
 
         public PersonDTO.Builder withId(final Long id) {
             this.id = id;
@@ -56,6 +88,11 @@ public class PersonDTO {
 
         public PersonDTO.Builder withAge(final int age) {
             this.age = age;
+            return this;
+        }
+
+        public PersonDTO.Builder withSalary(final BigDecimal salary) {
+            this.salary = salary;
             return this;
         }
 

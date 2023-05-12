@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,31 +35,31 @@ public class PersonController {
     }
 
     @GetMapping
-    ResponseEntity<List<PersonDTO>> findAll(){
+    ResponseEntity<List<PersonDTO>> findAll() {
         List<PersonDTO> dtos = personService.getAll();
-        if(dtos.isEmpty()){
+        if (dtos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(dtos);
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<PersonDTO> findById(@PathVariable final Long id){
+    ResponseEntity<PersonDTO> findById(@PathVariable final Long id) {
         PersonDTO dto = personService.getPersonById(id);
         return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/gender/{gender}")
-    ResponseEntity<List<PersonDTO>> findPersonsByGender(@PathVariable final Gender gender){
+    ResponseEntity<List<PersonDTO>> findPersonsByGender(@PathVariable final Gender gender) {
         List<PersonDTO> persons = personService.getPersonsByGender(gender);
-        if(persons.isEmpty()){
+        if (persons.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(persons);
     }
 
     @PostMapping
-    ResponseEntity<Void> createPerson(@RequestBody final CreatePerson request){
+    ResponseEntity<Void> createPerson(@RequestBody final CreatePerson request) {
         PersonDTO dto = personService.createPerson(request);
         URI uri = UriComponentsBuilder.fromPath(PATH + "/{id}")
                 .buildAndExpand(dto.getId())
@@ -67,22 +68,24 @@ public class PersonController {
         return ResponseEntity.created(uri).build();
     }
 
+    @PutMapping
+    ResponseEntity<Void> raiseAllSalaries() {
+        personService.raiseAllSalaries();
+        return ResponseEntity.ok().build();
+    }
+
 
     @PatchMapping("/{id}")
-    ResponseEntity<Void> patchPerson(@PathVariable final Long id, @RequestBody final JsonPatch patch){
+    ResponseEntity<Void> patchPerson(@PathVariable final Long id, @RequestBody final JsonPatch patch) {
         personService.updatePerson(id, patch);
         return ResponseEntity.ok(null);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteById(@PathVariable final Long id){
+    ResponseEntity<Void> deleteById(@PathVariable final Long id) {
         personService.deletePersonById(id);
         return ResponseEntity.noContent().build();
     }
-
-
-
-
 
 
 }

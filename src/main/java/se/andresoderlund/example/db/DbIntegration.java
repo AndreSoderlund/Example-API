@@ -3,8 +3,8 @@ package se.andresoderlund.example.db;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import se.andresoderlund.example.db.entity.Person;
-import se.andresoderlund.example.db.repository.PersonRepository;
 import se.andresoderlund.example.db.exception.EntityNotFoundException;
+import se.andresoderlund.example.db.repository.PersonRepository;
 
 import java.util.List;
 
@@ -54,8 +54,12 @@ public class DbIntegration {
         return personRepository.findAll();
     }
 
-    public Person savePerson(final Person person){
+    public Person savePerson(final Person person) {
         return personRepository.save(person);
+    }
+
+    public List<Person> savePersons(List<Person> personList) {
+        return personRepository.saveAll(personList);
     }
 
 }
